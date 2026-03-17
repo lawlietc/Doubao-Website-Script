@@ -1,4 +1,4 @@
-# 豆包功能加强脚本
+# 豆包功能加强脚本 (Doubao Website Script)
 
 ## 项目介绍
 
@@ -19,10 +19,14 @@
 - 侧边栏的显示/隐藏状态会被保存，刷新页面后会保持上一次的状态
 - 隐藏侧边栏后，鼠标经过不会自动显示侧边栏
 
+### 4. 推荐内容隐藏
+- 自动隐藏页面上的推荐内容区域（包括加载动画）
+- 可通过油猴菜单命令开启/关闭此功能
+
 ## 安装方法
 
 1. 安装油猴浏览器扩展（Tampermonkey）
-2. 点击脚本文件 `豆包功能加强脚本.user.js`，然后点击「安装」按钮
+2. 点击脚本文件 `Doubao-Website-Script.user.js`，然后点击「安装」按钮
 3. 刷新豆包网页，脚本即可生效
 
 ## 使用说明
@@ -32,6 +36,7 @@
 
 ### 菜单命令
 - 油猴菜单中有「启用深色模式」和「禁用深色模式」选项，可用于控制自动深色模式功能
+- 油猴菜单中有「显示推荐内容」和「隐藏推荐内容」选项，可用于控制推荐内容隐藏功能
 
 ### 侧边栏控制
 - 点击侧边栏顶部的关闭按钮可以隐藏/显示侧边栏
@@ -45,6 +50,7 @@
 
 ## 版本历史
 
+- v2.0: 新增推荐内容隐藏功能，包括加载动画区域
 - v1.9: 修复侧边栏鼠标悬停问题，优化CSS规则和JavaScript逻辑
 - v1.8: 初始版本，包含快捷键、自动深色模式和侧边栏控制功能
 
@@ -85,10 +91,14 @@ This is an enhancement script for the Doubao web version, designed to improve us
 - The sidebar's show/hide state is saved, and will remain the same after page refresh
 - When the sidebar is hidden, it won't automatically show when mouse passes by
 
+### 4. Recommendations Hide
+- Automatically hides recommendation content areas (including loading animations)
+- Can be enabled/disabled via Tampermonkey menu command
+
 ## Installation
 
 1. Install Tampermonkey browser extension
-2. Click on the script file `豆包功能加强脚本.user.js` and then click the "Install" button
+2. Click on the script file `Doubao-Website-Script.user.js` and then click the "Install" button
 3. Refresh the Doubao webpage for the script to take effect
 
 ## Usage
@@ -98,6 +108,7 @@ This is an enhancement script for the Doubao web version, designed to improve us
 
 ### Menu Commands
 - There are "Enable Dark Mode" and "Disable Dark Mode" options in the Tampermonkey menu to control the auto dark mode feature
+- There are "Show Recommendations" and "Hide Recommendations" options in the Tampermonkey menu to control the recommendations hide feature
 
 ### Sidebar Control
 - Click the close button at the top of the sidebar to hide/show the sidebar
@@ -111,6 +122,7 @@ This is an enhancement script for the Doubao web version, designed to improve us
 
 ## Version History
 
+- v2.0: Added recommendations hide feature, including loading animation area
 - v1.9: Fixed sidebar mouse hover issue, optimized CSS rules and JavaScript logic
 - v1.8: Initial version, including keyboard shortcuts, auto dark mode and sidebar control features
 

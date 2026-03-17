@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         豆包功能加强脚本
 // @namespace    http://tampermonkey.net/
-// @version      1.9
-// @description  为豆包网页添加快捷键定位输入框、自动深色模式和侧边栏显示/隐藏切换功能
+// @version      2.0
+// @description  为豆包网页添加快捷键定位输入框、自动深色模式、侧边栏显示/隐藏切换和推荐内容隐藏功能
 // @author       AI Assistant & alikia2x
 // @match        https://*.doubao.com/*
 // @grant        GM_registerMenuCommand
@@ -36,8 +36,104 @@
 
     // 获取深色模式开关状态，默认为启用
     let darkModeEnabled = GM_getValue('darkModeEnabled', true);
+    // 获取隐藏推荐内容开关状态，默认为启用
+    let hideSuggestionsEnabled = GM_getValue('hideSuggestionsEnabled', true);
 
 
+    // 功能4: 隐藏推荐内容和加载动画
+    function initHideSuggestions() {
+        function hideSuggestionsElements() {
+            let hiddenCount = 0;
+            
+            // 隐藏带有特定ID的推荐内容容器
+            const suggestionsContainer = document.querySelector('#experiment-guidance-suggestions');
+            if (suggestionsContainer) {
+                // 隐藏整个容器
+                if (suggestionsContainer.style.display !== 'none') {
+                    suggestionsContainer.style.display = 'none';
+                    console.log('已隐藏推荐内容容器 (ID)');
+                    hiddenCount++;
+                }
+                // 设置 min-height 为 0
+                suggestionsContainer.style.minHeight = '0';
+                
+                // 隐藏加载动画元素（第一个div，类名 max-w-full）
+                const firstDiv = suggestionsContainer.querySelector(':scope > div');
+                if (firstDiv && firstDiv.style.display !== 'none') {
+                    firstDiv.style.display = 'none';
+                    console.log('已隐藏加载动画元素');
+                    hiddenCount++;
+                }
+            }
+
+            // 隐藏没有特定ID但结构相似的推荐内容容器
+            const similarContainers = document.querySelectorAll('.flex.min-h-150.w-full.flex-col.justify-center');
+            similarContainers.forEach(container => {
+                container.style.display = 'none';
+                container.style.minHeight = '0';
+                console.log('已隐藏推荐内容容器 (class)');
+                hiddenCount++;
+            });
+
+            // 额外检查：隐藏带有特定滚动条样式的容器
+            const allContainers = document.querySelectorAll('.flex.min-h-150.w-full');
+            allContainers.forEach(container => {
+                // 检查容器是否包含带有滚动条样式的子元素
+                const scrollChild = container.querySelector('div.overflow-x-auto');
+                if (scrollChild) {
+                    container.style.display = 'none';
+                    container.style.minHeight = '0';
+                    console.log('已隐藏推荐内容容器 (scroll)');
+                    hiddenCount++;
+                }
+            });
+            
+            // 只有当实际隐藏了元素时才输出汇总信息
+            if (hiddenCount > 0) {
+                console.log(`本次检查共隐藏了 ${hiddenCount} 个元素`);
+            }
+        }
+        
+        // 使用 MutationObserver 监听 DOM 变化，快速捕获加载动画
+        const observer = new MutationObserver(function(mutations) {
+            if (hideSuggestionsEnabled) {
+                hideSuggestionsElements();
+            }
+        });
+        
+        // 等待 DOM 就绪后开始监听
+        function startObserver() {
+            if (document.body) {
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            } else {
+                setTimeout(startObserver, 100);
+            }
+        }
+        
+        // 初始隐藏推荐内容
+        if (hideSuggestionsEnabled) {
+            // 先尝试立即隐藏
+            hideSuggestionsElements();
+            
+            // 开始监听 DOM 变化
+            startObserver();
+
+            // 定期检查并隐藏新出现的推荐内容
+            setInterval(() => {
+                if (hideSuggestionsEnabled) {
+                    hideSuggestionsElements();
+                }
+            }, 1000); // 每秒检查一次
+        }
+
+        // 返回控制函数
+        return {
+            hide: hideSuggestionsElements
+        };
+    }
 
     // 功能2: 自动深色模式
     function initAutoDarkMode() {
@@ -287,6 +383,16 @@
             }
         );
 
+        // 隐藏推荐内容开关菜单项
+        GM_registerMenuCommand(
+            hideSuggestionsEnabled ? "显示推荐内容" : "隐藏推荐内容",
+            function() {
+                hideSuggestionsEnabled = !hideSuggestionsEnabled;
+                GM_setValue('hideSuggestionsEnabled', hideSuggestionsEnabled);
+                // 重新初始化隐藏推荐内容功能
+                initHideSuggestions();
+            }
+        );
 
     }
 
@@ -298,6 +404,7 @@
                 initInputFocusShortcut();
                 initAutoDarkMode();
                 initSidebarToggle();
+                initHideSuggestions();
                 registerMenuCommands();
             });
         } else {
@@ -305,6 +412,7 @@
             initInputFocusShortcut();
             initAutoDarkMode();
             initSidebarToggle();
+            initHideSuggestions();
             registerMenuCommands();
         }
     }
