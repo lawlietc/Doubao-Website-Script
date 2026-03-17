@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         豆包功能加强脚本
 // @namespace    http://tampermonkey.net/
-// @version      2.0
-// @description  为豆包网页添加快捷键定位输入框、自动深色模式、侧边栏显示/隐藏切换和推荐内容隐藏功能
+// @version      2.1
+// @description  为豆包网页添加快捷键定位输入框、自动深色模式、侧边栏显示/隐藏切换和推荐内容隐藏功能（包括推荐消息列表）
 // @author       AI Assistant & alikia2x
 // @match        https://*.doubao.com/*
 // @grant        GM_registerMenuCommand
@@ -84,6 +84,26 @@
                     container.style.display = 'none';
                     container.style.minHeight = '0';
                     console.log('已隐藏推荐内容容器 (scroll)');
+                    hiddenCount++;
+                }
+            });
+
+            // 隐藏带有 data-foundation-type="receive-message-suggest-foundation" 属性的元素
+            const suggestFoundationElements = document.querySelectorAll('[data-foundation-type="receive-message-suggest-foundation"]');
+            suggestFoundationElements.forEach(element => {
+                if (element.style.display !== 'none') {
+                    element.style.display = 'none';
+                    console.log('已隐藏推荐消息容器 (foundation-type)');
+                    hiddenCount++;
+                }
+            });
+
+            // 隐藏带有 suggest-message-list-wrapper-QLdGFg 类的元素
+            const suggestMessageListElements = document.querySelectorAll('.suggest-message-list-wrapper-QLdGFg');
+            suggestMessageListElements.forEach(element => {
+                if (element.style.display !== 'none') {
+                    element.style.display = 'none';
+                    console.log('已隐藏建议消息列表 (wrapper)');
                     hiddenCount++;
                 }
             });
